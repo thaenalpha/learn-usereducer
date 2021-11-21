@@ -1,30 +1,22 @@
-import React, { useState } from 'react';
+import React, { FormEventHandler } from 'react';
 
 import { login } from './utils';
 
-const initialState = {
-  username: '',
-  password: '',
-  isLoading: false,
-  error: '',
-  isLoggedIn: false,
-};
-
 export default function LoginUseState() {
-  const [username, setUsername] = useState(initialState.username);
-  const [password, setPassword] = useState(initialState.password);
-  const [isLoading, setIsLoading] = useState(initialState.isLoading);
-  const [error, setError] = useState(initialState.error);
-  const [isLoggedIn, setIsLoggedIn] = useState(initialState.isLoggedIn);
+  const [username, setUsername] = React.useState<string>('');
+  const [password, setPassword] = React.useState<string>('');
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<string>('');
+  const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(false);
 
-  const onSubmit = async e => {
+  const onSubmit: FormEventHandler = async e => {
     e.preventDefault();
 
     setError('')
     setIsLoading(true)
 
     try {
-      await login({username, password})
+      await login({ username, password })
       setIsLoggedIn(true)
       setIsLoading(false)
     } catch (error) {

@@ -1,8 +1,15 @@
-import React, { useReducer } from 'react';
+import React, { FormEventHandler } from 'react';
 
 import { login } from './utils'
 
-function loginReducer(state, action) {
+type ACTIONTYPE =
+  | { type: "field"; fieldName: string; payload: string }
+  | { type: 'login' }
+  | { type: 'success' }
+  | { type: 'error' }
+  | { type: 'logOut' }
+
+function loginReducer(state: typeof initialState, action: ACTIONTYPE) {
   switch (action.type) {
     case 'field': {
       return {
@@ -54,19 +61,19 @@ const initialState = {
 };
 
 export default function LoginUseReducer() {
-  const [state, dispatch] = useReducer(loginReducer, initialState);
+  const [state, dispatch] = React.useReducer(loginReducer, initialState);
   const { username, password, isLoading, error, isLoggedIn } = state;
 
-  const onSubmit = async e => {
+  const onSubmit: FormEventHandler = async e => {
     e.preventDefault();
 
     dispatch({ type: 'login' });
-// dispatch act like partial function of reducer for action
+    // dispatch act like partial function of reducer for action
     try {
-      await login({username, password})
+      await login({ username, password })
       dispatch({ type: 'success' })
     } catch (error) {
-      dispatch({type: 'error'})
+      dispatch({ type: 'error' })
     }
   }
 
