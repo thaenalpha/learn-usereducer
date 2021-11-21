@@ -3,6 +3,7 @@ import './App.css';
 import React from 'react';
 
 import LoginUseReducer from './LoginUseReducer';
+import LoginUseReducerImmer from './LoginUseReducerImmer';
 import LoginUseState from './LoginUseState';
 
 function App() {
@@ -19,10 +20,14 @@ function App() {
           <br />
           <br />
           <a href="#useReducer">useReducer</a>
+          <br />
+          <br />
+          <a href="#useReducerImmer">useReducerImmer</a>
         </div>
       )}
       {hash === '#useState' && <LoginUseState />}
       {hash === '#useReducer' && <LoginUseReducer />}
+      {hash === '#useReducerImmer' && <LoginUseReducerImmer />}
     </>
   );
 }
