@@ -1,5 +1,6 @@
+import { Draft, Immutable } from 'immer';
+import { useImmerReducer } from 'use-immer';
 import React, { FormEventHandler } from 'react';
-import produce, { Draft, Immutable } from 'immer';
 
 import { login } from './utils'
 
@@ -16,32 +17,32 @@ type ACTIONTYPE =
   | { type: 'error' }
   | { type: 'logOut' }
 
-function loginReducer(state: Draft<typeof initialState>, action: ACTIONTYPE) {
+function loginReducer(draft: Draft<typeof initialState>, action: ACTIONTYPE) {
   switch (action.type) {
     case 'field': {
-      state[action.fieldName] = action.payload
+      draft[action.fieldName] = action.payload
       return
     }
     case 'login': {
-      state.error = ''
-      state.isLoading = true
+      draft.error = ''
+      draft.isLoading = true
       return
     }
     case 'success': {
-      state.isLoggedIn = true
-      state.isLoading = false
+      draft.isLoggedIn = true
+      draft.isLoading = false
       return
     }
     case 'error': {
-      state.error = 'Incorrect username or password!'
-      state.isLoggedIn = false
-      state.isLoading = false
-      state.username = ''
-      state.password = ''
+      draft.error = 'Incorrect username or password!'
+      draft.isLoggedIn = false
+      draft.isLoading = false
+      draft.username = ''
+      draft.password = ''
       return
     }
     case 'logOut': {
-      state.isLoggedIn = false
+      draft.isLoggedIn = false
       return
     }
     default:
@@ -57,14 +58,8 @@ const initialState: State = {
   isLoggedIn: false,
 };
 
-const curriedLoginReducer = produce(loginReducer)
-
-/* const curriedLoginReducer = (state: typeof initialState, ...args: []) => {
-*     return produce(state, draft => loginReducer(draft, ...args))
-* } */
-
 export default function LoginUseReducer() {
-  const [state, dispatch] = React.useReducer(curriedLoginReducer, initialState);
+  const [state, dispatch] = useImmerReducer(loginReducer, initialState);
   const { username, password, isLoading, error, isLoggedIn } = state;
 
   const onSubmit: FormEventHandler = async e => {
