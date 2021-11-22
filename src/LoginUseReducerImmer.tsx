@@ -20,17 +20,17 @@ function loginReducer(state: Draft<typeof initialState>, action: ACTIONTYPE) {
   switch (action.type) {
     case 'field': {
       state[action.fieldName] = action.payload
-      return state
+      return
     }
     case 'login': {
       state.error = ''
       state.isLoading = true
-      return state
+      return
     }
     case 'success': {
       state.isLoggedIn = true
       state.isLoading = false
-      return state
+      return
     }
     case 'error': {
       state.error = 'Incorrect username or password!'
@@ -38,11 +38,11 @@ function loginReducer(state: Draft<typeof initialState>, action: ACTIONTYPE) {
       state.isLoading = false
       state.username = ''
       state.password = ''
-      return state
+      return
     }
     case 'logOut': {
       state.isLoggedIn = false
-      return state
+      return
     }
     default:
       throw new Error();
