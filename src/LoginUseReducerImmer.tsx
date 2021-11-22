@@ -1,55 +1,55 @@
 import React, { FormEventHandler } from 'react';
-import produce from 'immer';
+import produce, { Draft, Immutable } from 'immer';
 
 import { login } from './utils'
 
+type State = Immutable<{
+  username: string; password: string
+  isLoading: boolean; error: string; isLoggedIn: boolean
+}>
+
 type ACTIONTYPE =
-  | { type: "field"; fieldName: "username"; payload: string }
-  | { type: "field"; fieldName: "password"; payload: string }
+  | { type: 'field'; fieldName: 'username'; payload: string }
+  | { type: 'field'; fieldName: 'password'; payload: string }
   | { type: 'login' }
   | { type: 'success' }
   | { type: 'error' }
   | { type: 'logOut' }
 
-function loginReducer(state: typeof initialState, action: ACTIONTYPE) {
+function loginReducer(state: Draft<typeof initialState>, action: ACTIONTYPE) {
   switch (action.type) {
     case 'field': {
-      return produce(state, draft => {
-        draft[action.fieldName] = action.payload
-      });
+      state[action.fieldName] = action.payload
+      return state
     }
     case 'login': {
-      return produce(state, draft => {
-        draft.error = ''
-        draft.isLoading = true
-      });
+      state.error = ''
+      state.isLoading = true
+      return state
     }
     case 'success': {
-      return produce(state, draft => {
-        draft.isLoggedIn = true
-        draft.isLoading = false
-      });
+      state.isLoggedIn = true
+      state.isLoading = false
+      return state
     }
     case 'error': {
-      return produce(state, draft => {
-        draft.error = 'Incorrect username or password!'
-        draft.isLoggedIn = false
-        draft.isLoading = false
-        draft.username = ''
-        draft.password = ''
-      });
+      state.error = 'Incorrect username or password!'
+      state.isLoggedIn = false
+      state.isLoading = false
+      state.username = ''
+      state.password = ''
+      return state
     }
     case 'logOut': {
-      return produce(state, draft => {
-        draft.isLoggedIn = false
-      });
+      state.isLoggedIn = false
+      return state
     }
     default:
-      return state;
+      throw new Error();
   }
 }
 
-const initialState = {
+const initialState: State = {
   username: '',
   password: '',
   isLoading: false,
@@ -57,8 +57,14 @@ const initialState = {
   isLoggedIn: false,
 };
 
+const curriedLoginReducer = produce(loginReducer)
+
+/* const curriedLoginReducer = (state: typeof initialState, ...args: []) => {
+*     return produce(state, draft => loginReducer(draft, ...args))
+* } */
+
 export default function LoginUseReducer() {
-  const [state, dispatch] = React.useReducer(loginReducer, initialState);
+  const [state, dispatch] = React.useReducer(curriedLoginReducer, initialState);
   const { username, password, isLoading, error, isLoggedIn } = state;
 
   const onSubmit: FormEventHandler = async e => {
